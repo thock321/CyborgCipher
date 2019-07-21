@@ -9,7 +9,7 @@
 /*
  *
  */
-char* generateCipher() {
+char* randomCaesarCipher() {
     int n = ASCII_END - ASCII_START;
     int offset = rand() % ASCII_END;
     if (offset == 0)
@@ -18,6 +18,22 @@ char* generateCipher() {
     int i;
     for (i = ASCII_START; i < ASCII_END; i++) {
         cipher[i - ASCII_START] = ((i + offset) % n) + ASCII_START;
+    }
+    return cipher;
+}
+
+char* randomizedCipher() {
+    int n = ASCII_END - ASCII_START;
+    char* cipher = (char*) malloc(sizeof(char) * n);
+    int i;
+    for (i = 0; i < n; i++) {
+        cipher[i] = i + ASCII_START;
+    }
+    for (i = 0; i < n - 1; i++) {
+        int j = i + rand() / (RAND_MAX / (n - i) + 1);
+        char temp = cipher[i];
+        cipher[i] = cipher[j];
+        cipher[j] = temp;
     }
     return cipher;
 }
@@ -36,12 +52,79 @@ char* getDecipher(char const* cipher) {
     return decipher;
 }
 
-char encrypt(char c, char* cipher) {
+char encryptChar(char c, char *cipher) {
     return cipher[c - ASCII_START];
 }
 
-char decrypt(char c, char* decipher) {
+char decryptChar(char c, char *decipher) {
     return decipher[c - ASCII_START];
+}
+
+void handleEncryption(char const* inputFileName, char const* outputFileName, char const* cipherFileName, char const* cipherType) {
+    char* cipher;
+    if (strcmp(cipherType, "caesar") == 0)
+        cipher = randomCaesarCipher();
+    else
+        cipher = randomizedCipher();
+    int i;
+    FILE* cipherOut = fopen(cipherFileName, "w");
+    int n = ASCII_END - ASCII_START;
+    for (i = 0; i < n; i++) {
+        fprintf(cipherOut, "%c", cipher[i]);
+    }
+    FILE* input = fopen(inputFileName, "r");
+    if (input == NULL) {
+        perror("Error opening input file.\n");
+        exit(EXIT_FAILURE);
+    }
+    FILE* out = fopen(outputFileName, "w");
+    if (out == NULL) {
+        perror("Error writing to output file.\n");
+        exit(EXIT_FAILURE);
+    }
+    char c;
+    while ((c = fgetc(input)) != EOF) {
+        c = encryptChar(c, cipher);
+        fprintf(out, "%c", c);
+    }
+    fclose(cipherOut);
+    fclose(input);
+    fclose(out);
+    free(cipher);
+    printf("Successfully encrypted.");
+}
+
+void handleDecryption(char const* inputFileName, char const* outputFileName, char const* cipherFileName) {
+    FILE* cipherFile = fopen(cipherFileName, "r");
+    if (cipherFile == NULL) {
+        perror("Error opening cipher file.\n");
+        exit(EXIT_FAILURE);
+    }
+    int n = ASCII_END - ASCII_START;
+    char* cipher = malloc(sizeof(char) * n);
+    fgets(cipher, n, cipherFile);
+    char* decipher = getDecipher(cipher);
+    free(cipher);
+    FILE* input = fopen(inputFileName, "r");
+    if (input == NULL) {
+        perror("Error opening encrypted file.\n");
+        exit(EXIT_FAILURE);
+    }
+    FILE* out = fopen(outputFileName, "w");
+    if (out == NULL) {
+        perror("Error writing to decrypted file.");
+        exit(EXIT_FAILURE);
+    }
+    char c;
+    while ((c = fgetc(input)) != EOF) {
+        c = decryptChar(c, decipher);
+        fprintf(out, "%c", c);
+    }
+    fclose(input);
+    fclose(out);
+    fclose(cipherFile);
+    free(decipher);
+    printf("Successfully decrypted.");
 }
 
 int main(int argc, char** argv) {
@@ -53,68 +136,9 @@ int main(int argc, char** argv) {
     }
     char* mode = argv[1];
     if (strcmp(mode, "cipher") == 0) {
-
-        char *cipher = generateCipher();
-
-        int i;
-        FILE* cipherOut = fopen("cipher.txt", "w");
-        int n = ASCII_END - ASCII_START;
-        for (i = 0; i < n; i++) {
-            fprintf(cipherOut, "%c", cipher[i]);
-        }
-        fclose(cipherOut);
-
-        FILE* input = fopen("input.txt", "r");
-        if (input == NULL) {
-            perror("Error opening input file.\n");
-            exit(EXIT_FAILURE);
-        }
-        FILE* out = fopen("encrypted.txt", "w");
-        if (out == NULL) {
-            perror("Error writing to output file.\n");
-            exit(EXIT_FAILURE);
-        }
-        char c;
-        while ((c = fgetc(input)) != EOF) {
-            c = encrypt(c, cipher);
-            fprintf(out, "%c", c);
-        }
-        printf("Successfully encrypted.");
-        fclose(input);
-        fclose(out);
-        free(cipher);
+        handleEncryption("input.txt", "encrypted.txt", "cipher.txt", argc >= 3 ? argv[2] : "random");
     } else if (strcmp(mode, "decipher") == 0) {
-        FILE* cipherFile = fopen("cipher.txt", "r");
-        if (cipherFile == NULL) {
-            perror("Error opening cipher file.\n");
-            exit(EXIT_FAILURE);
-        }
-        int n = ASCII_END - ASCII_START;
-        char* cipher = malloc(sizeof(char) * n);
-        fgets(cipher, n, cipherFile);
-        char* decipher = getDecipher(cipher);
-        free(cipher);
-        FILE* input = fopen("encrypted.txt", "r");
-        if (input == NULL) {
-            perror("Error opening encrypted file.\n");
-            exit(EXIT_FAILURE);
-        }
-        FILE* out = fopen("decrypted.txt", "w");
-        if (out == NULL) {
-            perror("Error writing to decrypted file.");
-            exit(EXIT_FAILURE);
-        }
-        char c;
-        printf("%s", decipher);
-        while ((c = fgetc(input)) != EOF) {
-            c = decrypt(c, decipher);
-            fprintf(out, "%c", c);
-        }
-        fclose(input);
-        fclose(out);
-        fclose(cipherFile);
-        free(decipher);
-        printf("Successfully decrypted.");
+        handleDecryption("encrypted.txt", "decrypted.txt", "cipher.txt");
     }
     return 0;
 }
