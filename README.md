@@ -24,6 +24,8 @@ TODO
 
 ## Running tests
 
+### Windows
+
 Create a file called `input.txt` in the same directory as `main.exe`.  Then run:
 
 ```
@@ -38,13 +40,23 @@ main.exe decipher
 
 To decrypt the encrypted file.
 
+### Linux
+
+TODO
+
 ## Features
 
 Currently, a random offset Caesar cipher and a fully randomized cipher is supported.  To specify using the Caesar cipher, use `caesar` as the third argument.
 
+### Windows
+
 ```
 main.exe cipher caesar
 ```
+
+### Linux
+
+TODO
 
 A blank third argument or any other value will result in the default randomized cipher being used.
 

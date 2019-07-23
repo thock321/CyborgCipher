@@ -12,54 +12,52 @@
 #include <time.h>
 #include <string.h>
 
-/**
- * We only want to consider ASCII characters from 32 (inc) to 127 (exc).
- * Since our char values only go up to 126, we don't need to use unsigned chars.
- */
+//First 32 ASCII characters are control codes, which are not printable, writeable or readable.  We can ignore those.
 #define ASCII_START 32
-#define ASCII_END 127
+#define ASCII_MAX 256
 
 /**
- * Generate a Caesar cipher with a random offset.  The index represents the input character, and the value represents the output character.
- * @return A character array representing our Caesar cipher.
+ * Generate a Caesar cipher with a random offset.  The index represents the input unsigned character, and the value represents the output unsigned character.
+ * @return A unsigned character array representing our Caesar cipher.
  */
-char* randomCaesarCipher();
+unsigned char* randomCaesarCipher();
 
 /**
- * Generate a completely randomized cipher.  The index represents the input character, and the value represents the output character.
- * @return A character array representing our random cipher.
+ * Generate a completely (pseudo) randomized cipher.  The index represents the input unsigned character, and the value represents the output unsigned character.
+ * Shuffling algorithm credits to Ben Pfaff.  https://benpfaff.org/writings/clc/shuffle.html
+ * @return A unsigned character array representing our random cipher.
  */
-char* randomizedCipher();
+unsigned char* randomizedCipher();
 
 /**
  * Create a decipher based on a cipher and return it.
  * @param cipher The cipher we used to encrypt.
  * @return The decipher we use to decrypt.
  */
-char* getDecipher(char const* cipher);
+unsigned char* getDecipher(unsigned char const* cipher);
 
 /**
- * Encrypt a character with a specified cipher.
- * @param c The character to encrypt.
+ * Encrypt a unsigned character with a specified cipher.
+ * @param c The unsigned character to encrypt.
  * @param cipher The cipher we use.
- * @return The encrypted character.
+ * @return The encrypted unsigned character.
  */
-char encryptChar(char const c, char const *cipher);
+unsigned char encryptChar(unsigned char const c, unsigned char const *cipher);
 
 /**
- * Decrypt a character with a specified decipher.
- * @param c The character to decrypt.
+ * Decrypt a unsigned character with a specified decipher.
+ * @param c The unsigned character to decrypt.
  * @param decipher The decipher we use.
- * @return The decrypted character.
+ * @return The decrypted unsigned character.
  */
-char decryptChar(char const c, char const *decipher);
+unsigned char decryptChar(unsigned char const c, unsigned char const *decipher);
 
 /**
  * Ensure that a pointer is not a null value.  If it is, print the specified error message.
  * @param ptr The pointer to verify.
  * @param errorMsg The error message to print.
  */
-void assertNotNull(void* ptr, char const* errorMsg);
+void assertNotNull(void* ptr, unsigned char const* errorMsg);
 
 /**
  * Do all our encryption with specified input/output files.
@@ -68,7 +66,7 @@ void assertNotNull(void* ptr, char const* errorMsg);
  * @param cipherFileName The file we want to output our cipher to.
  * @param cipherType The type of cipher we want to use.  Anything other than "caesar" will be assumed as random.
  */
-void handleEncryption(char const* inputFileName, char const* outputFileName, char const* cipherFileName, char const* cipherType);
+void handleEncryption(unsigned char const* inputFileName, unsigned char const* outputFileName, unsigned char const* cipherFileName, unsigned char const* cipherType);
 
 /**
  * Do all our decryption with specified input/output files.
@@ -76,6 +74,6 @@ void handleEncryption(char const* inputFileName, char const* outputFileName, cha
  * @param outputFileName The decrypted text file.
  * @param cipherFileName The cipher we used to encrypt the file.
  */
-void handleDecryption(char const* inputFileName, char const* outputFileName, char const* cipherFileName);
+void handleDecryption(unsigned char const* inputFileName, unsigned char const* outputFileName, unsigned char const* cipherFileName);
 
 #endif //CYBORGCIPHER_CCIPHER_H
