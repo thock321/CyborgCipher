@@ -73,7 +73,6 @@ void handleEncryption(unsigned char const* inputFileName, unsigned char const* o
     FILE* cipherOut = fopen(cipherFileName, "w");
     assertNotNull(cipherOut, "Error writing to cipher file.\n");
     int n = ASCII_MAX - ASCII_START;
-    int i;
     fwrite(cipher, sizeof(unsigned char), n, cipherOut);
     FILE* input = fopen(inputFileName, "r");
     assertNotNull(input, "Error opening input file.\n");
