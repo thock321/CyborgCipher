@@ -50,11 +50,11 @@ unsigned char* getDecipher(unsigned char const* cipher) {
 }
 
 unsigned char encryptChar(unsigned char const c, unsigned char const *cipher) {
-    return cipher[c - ASCII_START];
+    return cipher[(unsigned char) (c - ASCII_START)];
 }
 
 unsigned char decryptChar(unsigned char const c, unsigned char const *decipher) {
-    return decipher[c - ASCII_START];
+    return decipher[(unsigned char) (c - ASCII_START)];
 }
 
 void assertNotNull(void* ptr, unsigned char const* errorMsg) {
