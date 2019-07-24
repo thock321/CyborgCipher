@@ -4,7 +4,7 @@ A program that can encrypt and decrypt text based on a cipher.
 
 All ASCII characters, except control codes, are supported. (32 to 255)
 
-Please note that this program is only guaranteed to run on Windows 10 machines.
+Please note that this program has only been tested on Windows 10 and Ubuntu, and thus only guaranteed for those two operating systems.
 
 ## Getting Started
 
@@ -90,4 +90,12 @@ The most basic cipher is probably the Caesar cipher.  However, a slightly better
 
 When encrypting and decrypting the files, my program reads and writes characters one at a time.  The reason for going this route rather than reading the files into a buffer is to handle the case if our input file is very large.  Storing a very large input into memory would not be feasible.
 
-Since ASCII control codes can't be read or written properly, the program completely ignores them.
+Since ASCII control codes can't be read or written properly, the program completely ignores them.  Only the new line character is supported.  
+
+### Possible Improvements
+
+The new line character could be a part of the cipher as well.  This helps obfuscate the encrypted message to make it harder to decrypt without the cipher.  However, I felt that this was an unncessary complication for the exercise, especially given the way I decided to design how the ciphers are represented in memory, and how simple the ciphers are.  
+
+Rather than storing the characters of the cipher into a file, I could store their byte representations.  This would also solve the above issue, since my program will not need to ignore control code characters since they can't be written properly.  Their byte representations can be written fine.
+
+The ciphers could be made more complex through a series of transformations on the ciphers, such as transposing etc.
