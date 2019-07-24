@@ -70,18 +70,22 @@ void handleEncryption(unsigned char const* inputFileName, unsigned char const* o
         cipher = randomCaesarCipher();
     else
         cipher = randomizedCipher();
-    FILE* cipherOut = fopen(cipherFileName, "wb");
+    FILE* cipherOut = fopen(cipherFileName, "w");
     assertNotNull(cipherOut, "Error writing to cipher file.\n");
     int n = ASCII_MAX - ASCII_START;
     int i;
     fwrite(cipher, sizeof(unsigned char), n, cipherOut);
-    FILE* input = fopen(inputFileName, "rb");
+    FILE* input = fopen(inputFileName, "r");
     assertNotNull(input, "Error opening input file.\n");
-    FILE* out = fopen(outputFileName, "wb");
+    FILE* out = fopen(outputFileName, "w");
     assertNotNull(out, "Error writing to output file.\n");
     int c;
     //Encrypt
     while ((c = fgetc(input)) != EOF) {
+        if (c == '\n') {
+            fputc('\n', out);
+            continue;
+        }
         c = encryptChar(c, cipher);
         fputc(c, out);
     }
@@ -96,7 +100,7 @@ void handleEncryption(unsigned char const* inputFileName, unsigned char const* o
 void handleDecryption(unsigned char const* inputFileName, unsigned char const* outputFileName, unsigned char const* cipherFileName) {
     int n = ASCII_MAX - ASCII_START;
     unsigned char* cipher = malloc(sizeof(unsigned char) * n);
-    FILE* cipherFile = fopen(cipherFileName, "rb");
+    FILE* cipherFile = fopen(cipherFileName, "r");
     assertNotNull(cipherFile, "Error opening cipher file.\n");
     //Read cipher from file
     int i;
@@ -105,13 +109,17 @@ void handleDecryption(unsigned char const* inputFileName, unsigned char const* o
         cipher[i] = ch;
     }
     unsigned char* decipher = getDecipher(cipher);
-    FILE* input = fopen(inputFileName, "rb");
+    FILE* input = fopen(inputFileName, "r");
     assertNotNull(input, "Error opening encrypted file.\n");
-    FILE* out = fopen(outputFileName, "wb");
+    FILE* out = fopen(outputFileName, "w");
     assertNotNull(out, "Error writing to decrypted file.\n");
     int c;
     //Decrypt
     while ((c = fgetc(input)) != EOF) {
+        if (c == '\n') {
+            fputc('\n', out);
+            continue;
+        }
         c = decryptChar(c, decipher);
         fputc(c, out);
     }
