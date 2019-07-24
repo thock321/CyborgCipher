@@ -94,7 +94,7 @@ void handleEncryption(unsigned char const* inputFileName, unsigned char const* o
     fclose(input);
     fclose(out);
     free(cipher);
-    printf("Successfully encrypted.");
+    printf("Successfully encrypted.\n");
 }
 
 void handleDecryption(unsigned char const* inputFileName, unsigned char const* outputFileName, unsigned char const* cipherFileName) {
@@ -128,5 +128,5 @@ void handleDecryption(unsigned char const* inputFileName, unsigned char const* o
     fclose(cipherFile);
     free(decipher);
     free(cipher);
-    printf("Successfully decrypted.");
+    printf("Successfully decrypted.\n");
 }
