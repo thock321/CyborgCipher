@@ -2,7 +2,9 @@
 
 A program that can encrypt and decrypt text based on a cipher.
 
-Only ASCII characters with values 32 (inclusive) to 127 (exclusive) are supported.
+All ASCII characters, except control codes, are supported.
+
+Please note that this program is only guarunteed to run on Windows 10 machines.
 
 ## Getting Started
 
@@ -13,14 +15,10 @@ Only ASCII characters with values 32 (inclusive) to 127 (exclusive) are supporte
 Please make sure to have Visual Studio Developer Command Prompt installed.  Using the Developer	Command Prompt, navigate to the folder containing `main.c` and execute:
 
 ```
-cl main.c
+cl ccipher.c main.c
 ```
 
 To compile.
-
-#### Linux
-
-TODO
 
 ## Running tests
 
@@ -29,20 +27,16 @@ TODO
 Create a file called `input.txt` in the same directory as `main.exe`.  Then run:
 
 ```
-main.exe cipher
+ccipher.exe cipher
 ```
 
 To encrypt the file.  Run:
 
 ```
-main.exe decipher
+ccipher.exe decipher
 ```
 
 To decrypt the encrypted file.
-
-### Linux
-
-TODO
 
 ## Features
 
@@ -51,12 +45,8 @@ Currently, a random offset Caesar cipher and a fully randomized cipher is suppor
 ### Windows
 
 ```
-main.exe cipher caesar
+ccipher.exe cipher caesar
 ```
-
-### Linux
-
-TODO
 
 A blank third argument or any other value will result in the default randomized cipher being used.
 
@@ -68,4 +58,4 @@ The most basic cipher is probably the Caesar cipher.  However, a slightly better
 
 When encrypting and decrypting the files, my program reads and writes characters one at a time.  The reason for going this route rather than reading the files into a buffer is to handle the case if our input file is very large.  Storing a very large input into memory would not be feasible.
 
-### Edge Cases Tested
+Since ASCII control codes can't be read or written properly, the program completely ignores them.
